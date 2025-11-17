@@ -1,4 +1,4 @@
-import { type NextAuthOptions } from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -109,3 +109,5 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
 };
+
+export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
