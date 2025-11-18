@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .text-gradient {
+    @apply bg-linear-to-br from-primary via-rose-700 to-primary bg-clip-text text-transparent;
+  }
+}
