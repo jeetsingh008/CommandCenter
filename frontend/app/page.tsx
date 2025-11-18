@@ -5,10 +5,22 @@ import {
   BarChart3Icon,
   ClipboardPenLineIcon,
 } from "lucide-react";
+import GrayBox from "@/components/GrayBox";
+import { BOX_DATA } from "@/constants/constant";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
+      {BOX_DATA.map((box) => (
+        <GrayBox
+          key={box.id}
+          size={box.size}
+          isFilled={box.isFilled}
+          rotateBy={box.rotateBy}
+          topBy={box.top}
+          leftBy={box.left}
+        />
+      ))}
       {/* === Hero Section === */}
       <section className="container mx-auto grid max-w-5xl place-items-center gap-6 py-20 text-center md:py-32">
         <h1 className="text-4xl font-bold  tracking-tighter md:text-6xl lg:text-7xl">
