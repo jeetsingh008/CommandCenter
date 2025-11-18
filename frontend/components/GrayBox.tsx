@@ -11,8 +11,8 @@ const GrayBox = ({ size, rotateBy, topBy, leftBy, isFilled }: GrayBoxProps) => {
   return (
     <div
       className={cn(
-        `absolute z-[-1] border-10 border-gray-900/40`,
-        isFilled && "bg-gray-900/40"
+        `absolute z-[-1] border-10 border-gray-900/30`,
+        isFilled && "bg-gray-900/30"
       )}
       style={{
         height: size,
