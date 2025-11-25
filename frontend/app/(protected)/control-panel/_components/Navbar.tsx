@@ -1,7 +1,7 @@
 "use client";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,14 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { SidebarTrigger } from "./ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const user = { name: "Jeet Singh", avatarImgUrl: "" };
 
 const Navbar = () => {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   return (
     <nav className="p-4 flex items-center justify-between">
       {/* Left side */}

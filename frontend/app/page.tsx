@@ -38,6 +38,10 @@ export default function HomePage() {
             in One <span className="text-primary">Dashboard.</span>
           </span>
         </h1>
+        <p className="text-lg text-muted-foreground md:text-xl">
+          <span className="text-primary font-semibold">(</span> Your Centralized
+          Command Center. <span className="text-primary font-semibold">)</span>
+        </p>
         <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
           DevPulse automatically syncs your GitHub activity, tracks your
           learning, and visualizes your progress. Stop guessing, start knowing.
@@ -49,7 +53,10 @@ export default function HomePage() {
           <Button asChild variant="outline" size="lg">
             <Link href="#features">Learn More</Link>
           </Button>
-          <Button size="lg" onClick={() => setTheme("dark")}>
+          <Button
+            size="lg"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
             setDarkMode
           </Button>
         </div>

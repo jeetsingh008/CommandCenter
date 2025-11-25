@@ -1,5 +1,5 @@
 import AppSidebar from "@/components/AppSidebar";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/app/(protected)/control-panel/_components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 
