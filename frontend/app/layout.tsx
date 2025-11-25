@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { Navbar } from "@/components/Navbar";
 
 // Load Poppins font
 const poppins = Poppins({
@@ -30,6 +31,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <main className="w-full font-poppins">
+            <Navbar />
             <div>{children}</div>
           </main>
         </ThemeProvider>

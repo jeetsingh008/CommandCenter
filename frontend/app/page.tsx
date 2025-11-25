@@ -38,9 +38,9 @@ export default function HomePage() {
             in One <span className="text-primary">Dashboard.</span>
           </span>
         </h1>
-        <p className="text-lg text-muted-foreground md:text-xl">
+        <p className="text-lg text-muted-foreground font-semibold md:text-xl">
           <span className="text-primary font-semibold">(</span> Your Centralized
-          Command Center. <span className="text-primary font-semibold">)</span>
+          Command Center <span className="text-primary font-semibold">)</span>
         </p>
         <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
           DevPulse automatically syncs your GitHub activity, tracks your
