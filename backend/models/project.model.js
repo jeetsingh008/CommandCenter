@@ -8,6 +8,7 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       maxlength: 50,
     },
+
     description: {
       type: String,
       maxlength: 500,
@@ -26,6 +27,7 @@ const projectSchema = new mongoose.Schema(
       enum: ["active", "completed", "archived", "on-hold"],
       default: "active",
     },
+
     color: {
       type: String,
       default: "#3B82F6",
