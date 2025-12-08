@@ -15,6 +15,11 @@ const projectSchema = new mongoose.Schema(
       trim: true,
     },
 
+    previewImage: {
+      type: String,
+      required: [true, "Preview image is required"],
+    },
+
     githubRepo: {
       type: String,
       trim: true,
