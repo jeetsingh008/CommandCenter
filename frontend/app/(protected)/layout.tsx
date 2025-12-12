@@ -1,12 +1,18 @@
-import { auth } from "@/lib/auth";
+// app/(protected)/layout.tsx
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth"; // or wherever your config is
 
-const layout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await auth;
-  if(!session) {
-    redirect("/login")
+export default async function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
   }
-  return <>{children}</>;
-};
 
-export default layout;
+  return <>{children}</>;
+}
