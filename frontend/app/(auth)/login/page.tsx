@@ -56,7 +56,7 @@ export default function LoginPage() {
             onClick={() =>
               signIn("github", {
                 // After sign-in, redirect to the dashboard
-                callbackUrl: "/",
+                callbackUrl: "/control-panel",
               })
             }
           >

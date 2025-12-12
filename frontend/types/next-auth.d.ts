@@ -1,48 +1,57 @@
-import 'next-auth';
-import 'next-auth/jwt';
+import "next-auth";
+import "next-auth/jwt";
 
 /**
- * This file is used to "augment" or "extend" the default types
- * provided by next-auth. This tells TypeScript about the new
- * properties we are adding to the Session and JWT.
+ * Extend the JWT token shape
  */
-
-declare module 'next-auth/jwt' {
-  /** Returned by the `jwt` callback */
+declare module "next-auth/jwt" {
   interface JWT {
-    /** Our custom Express API token */
+    /** Custom backend JWT from Express API */
     apiToken?: string;
-    /** Our custom user ID from MongoDB */
+
+    /** MongoDB user ID */
     id?: string;
-    /** To flag any errors */
+
+    /** Used when GitHub sync fails */
     error?: string;
   }
 }
 
-declare module 'next-auth' {
-  /**
-   * Returned by `auth()`, `useSession()`, `getSession()`
-   */
+/**
+ * Extend the NextAuth Session and User types
+ */
+declare module "next-auth" {
   interface Session {
     user: {
-      id: string; // Add the user ID to the session user
-    } & DefaultSession['user']; // Keep the default properties (name, email, image)
-    
-    /** Our custom Express API token */
-    apiToken: string;
-    /** To flag any errors */
-    error?: string;
+      /** MongoDB user ID */
+      id?: string;
+
+      /** Our backend JWT token */
+      apiToken?: string;
+
+      /** Error if GitHub sync failed */
+      error?: string;
+
+      /** Keep default fields: name, email, image */
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
   }
 
-  /**
-   * The `user` object we return from our `authorize` function.
-   * This is merged with the default `User` type.
-   */
   interface User {
-    token: string;
-    user: {
-      id: string;
-      email: string;
+    /** Backend-issued JWT (for Credentials login only) */
+    token?: string;
+
+    /** Backend user object */
+    user?: {
+      id?: string;
+      email?: string;
     };
+
+    /** These fields come from GitHub login */
+    id?: string; // GitHub ID
+    name?: string | null; // GitHub name
+    email?: string | null;
   }
 }

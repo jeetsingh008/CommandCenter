@@ -17,6 +17,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -46,7 +47,7 @@ export const authOptions: NextAuthOptions = {
 
           if (!res.ok || !data.token) {
             console.error("Credentials login failed:", data.message);
-            return null;
+            throw new Error(data.message || "Invalid email or password");
           }
 
           return data;
@@ -61,6 +62,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       if (account && user) {
+        // 🔥 GitHub Login Flow
         if (account.provider === "github") {
           try {
             const res = await fetch(
@@ -88,18 +90,22 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
+        // 🔥 Credentials Login Flow
         if (account.provider === "credentials") {
           token.apiToken = user.token;
-          token.id = user.user.id;
+          token.id = user.user?.id;
         }
       }
 
       return token;
     },
+
     async session({ session, token }) {
+      // 🔥 Store fields inside session.user (correct place)
       session.user.id = token.id as string;
-      session.apiToken = token.apiToken as string;
-      session.error = token.error as string;
+      session.user.apiToken = token.apiToken as string;
+      session.user.error = token.error as string | undefined;
+
       return session;
     },
   },
