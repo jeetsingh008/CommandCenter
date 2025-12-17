@@ -1,15 +1,23 @@
-import React from "react";
-import { Calendar, MapPin, Link as LinkIcon } from "lucide-react";
+import { Calendar } from "lucide-react";
 import Image from "next/image";
 
-const DashboardHeader = ({ user }: { user: any }) => {
+// types/user.ts
+export interface UserProfile {
+  fullName: string;
+  username: string;
+  avatar: string;
+  coverImage?: string;
+  dob?: string;
+  bio?: string;
+}
+
+const DashboardHeader = ({ user }: { user: UserProfile }) => {
   // Fallback data in case user prop is loading or incomplete
   const userData = user || {
     fullName: "Alex Developer",
     username: "alexdev",
-    avatar: "https://github.com/shadcn.png", // Placeholder
-    coverImage:
-      "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200&q=80", // Placeholder
+    avatar: "/avatar.jpg", // Placeholder
+    coverImage: "/cover.jpg", // Placeholder
     dob: "1998-05-15",
     bio: "Full Stack Developer building cool things.",
   };
@@ -50,6 +58,8 @@ const DashboardHeader = ({ user }: { user: any }) => {
           {/* Avatar - Centered and overlapping the cover image */}
           <div className="relative">
             <Image
+              height={50}
+              width={50}
               src={userData.avatar}
               alt={userData.fullName}
               className="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover bg-white"
