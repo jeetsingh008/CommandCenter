@@ -50,7 +50,7 @@ export default function RegisterPage() {
             className="w-full"
             onClick={() =>
               signIn("github", {
-                callbackUrl: "/",
+                callbackUrl: "/login",
               })
             }
           >
