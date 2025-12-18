@@ -81,57 +81,44 @@ export const syncGitHubUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (
-    [fullName, email, username, password].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "All fields are required");
+  // 1️⃣ Validation
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
   }
 
-  const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
-
+  // 2️⃣ Check existing user
+  const existedUser = await User.findOne({ email });
   if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists");
+    throw new ApiError(409, "User with this email already exists");
   }
 
-  // Handling Multer 'fields' upload
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  // 3️⃣ Auto-generate username
+  const username = email.split("@")[0] + "_" + Date.now().toString().slice(-4);
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
-  }
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-
-  if (!avatar) {
-    throw new ApiError(500, "Error uploading avatar to cloud");
-  }
-
+  // 4️⃣ Create user
   const user = await User.create({
-    fullName,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || "",
     email,
     password,
     username: username.toLowerCase(),
+    fullName: "", // can be updated later
+    avatar: "/images/avatar.png", // default avatar
+    coverImage: "",
   });
 
+  // 5️⃣ Remove sensitive fields
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while registering the user");
+    throw new ApiError(500, "User registration failed");
   }
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered Successfully"));
+    .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
 // @desc    Login User
