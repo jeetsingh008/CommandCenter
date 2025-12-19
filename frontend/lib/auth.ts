@@ -79,7 +79,8 @@ export const authOptions: NextAuthOptions = {
               }
             );
 
-            const data = await res.json();
+            const response = await res.json();
+            const data = response.data;
             if (!res.ok) throw new Error(data.message || "GitHub sync failed");
 
             token.apiToken = data.token;
