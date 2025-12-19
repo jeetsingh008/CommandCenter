@@ -59,10 +59,13 @@ const Navbar = () => {
           <DropdownMenuContent sideOffset={10}>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="h-[1.2rem] w-[1.2rem] mr-2" />
-              Profile
-            </DropdownMenuItem>
+            <Link href="/user">
+              <DropdownMenuItem>
+                <User className="h-[1.2rem] w-[1.2rem] mr-2" />
+                Profile
+              </DropdownMenuItem>
+            </Link>
+
             <DropdownMenuItem>
               <Settings className="h-[1.2rem] w-[1.2rem] mr-2" />
               Settings
