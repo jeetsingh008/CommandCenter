@@ -69,9 +69,8 @@ export async function loginUser(
     await signIn("credentials", {
       email,
       password,
-      redirect: false, 
+      redirect: false,
     });
-
   } catch (error) {
     // 1. Let Next.js Redirects pass through (Successful login)
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
@@ -82,8 +81,8 @@ export async function loginUser(
 
     // 2. Check for Credential Errors (Invalid login)
     if (
-      err.type === "CredentialsSignin" || 
-      err.code === "credentials" || 
+      err.type === "CredentialsSignin" ||
+      err.code === "credentials" ||
       err.message?.includes("CredentialsSignin")
     ) {
       return { message: "Invalid email or password." };
@@ -91,12 +90,24 @@ export async function loginUser(
 
     // 3. 🛑 DEBUGGING: Return the REAL error message to the UI
     // This will tell us if it's a Database error, Fetch error, or Config error
-    console.error("Login Error Details:", JSON.stringify(err, null, 2)); 
-    
-    return { 
-      message: `Login Failed: ${err.message || "Check server console for details"}` 
+    console.error("Login Error Details:", JSON.stringify(err, null, 2));
+
+    return {
+      message: `Login Failed: ${
+        err.message || "Check server console for details"
+      }`,
     };
   }
 
-  redirect("/");
+  redirect("/control-panel");
 }
+
+
+/* =========================
+   LOGOUT USER ---> for future use
+   ========================= */
+// export async function logoutUser() {
+//   await signOut({ redirectTo: "/" });
+// }
+
+// =========================
