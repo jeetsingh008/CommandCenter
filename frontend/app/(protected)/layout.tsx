@@ -1,14 +1,13 @@
-// app/(protected)/layout.tsx
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // or wherever your config is
+import { auth } from "@/lib/auth"; // ✅ Import the v5 'auth' helper
 
 export default async function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  // ✅ Fetch session using the new auth() function
+  const session = await auth();
 
   if (!session) {
     redirect("/login");

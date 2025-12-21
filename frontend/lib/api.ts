@@ -19,7 +19,7 @@ async function getApiContext() {
   const session = await auth();
 
   // We get the apiToken we stored in the session in lib/auth.ts
-  const token = session?.apiToken;
+  const token = session?.user?.apiToken;
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",

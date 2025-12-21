@@ -45,7 +45,7 @@ declare module "next-auth" {
 
     /** Backend user object */
     user?: {
-      id?: string;
+      _id?: string;
       email?: string;
     };
 
