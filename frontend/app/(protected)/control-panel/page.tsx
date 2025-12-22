@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CreateProjectModal } from "@/components/CreateProjectModal";
 
 // --- Types ---
 interface DashboardData {
@@ -78,9 +79,7 @@ export default async function ControlPanelPage() {
             System operational.
           </p>
         </div>
-        <Button className="shadow-lg" size="lg">
-          + New Project
-        </Button>
+        <CreateProjectModal />
       </div>
 
       {/* STATS GRID */}

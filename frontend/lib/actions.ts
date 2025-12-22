@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { signIn } from "@/lib/auth";
+import { api } from "@/lib/api"; // 👈 Add this
+import { revalidatePath } from "next/cache"; //
 
 type FormState = {
   message: string;
@@ -102,6 +104,31 @@ export async function loginUser(
   redirect("/control-panel");
 }
 
+/* =========================
+   🆕 CREATE PROJECT ACTION
+   ========================= */
+export async function createProjectAction(formData: {
+  title: string;
+  description: string;
+  color: string;
+}) {
+  try {
+    // This runs securely on the server
+    // api.post uses the headers from auth(), so the token is attached automatically
+    const res: any = await api.post("projects", formData);
+
+    if (res.success) {
+      // Refresh the dashboard so the new project shows up immediately
+      revalidatePath("/control-panel");
+      return { success: true, data: res.data };
+    }
+
+    return { success: false, error: res.message || "Failed to create project" };
+  } catch (error: any) {
+    console.error("Server Action Error:", error);
+    return { success: false, error: error.message || "System Error" };
+  }
+}
 
 /* =========================
    LOGOUT USER ---> for future use
