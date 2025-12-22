@@ -20,4 +20,4 @@ import authRouter from "./routes/auth.route.js";
 app.use("/api/auth", authRouter);
 
 import userRouter from "./routes/user.routes.js";
-app.use("/api/user", userRouter);
+app.use("/api/users", userRouter);
