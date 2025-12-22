@@ -19,7 +19,7 @@ const user = { name: "Jeet Singh", avatarImgUrl: "" };
 const Navbar = () => {
   const { setTheme } = useTheme();
   return (
-    <nav className="p-4 flex items-center justify-between">
+    <nav className="p-4 flex items-center justify-between sticky top-0 z-30 bg-card">
       {/* Left side */}
       <SidebarTrigger />
       {/* Right side */}
