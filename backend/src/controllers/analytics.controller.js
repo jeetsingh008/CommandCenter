@@ -1,10 +1,17 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import { Log } from "../models/log.model.js";
 import mongoose from "mongoose";
 
 const getWeeklyStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
+  if (!userId) {
+    throw new ApiError(400, "User ID is required");
+  }
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Invalid user ID");
+  }
 
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
