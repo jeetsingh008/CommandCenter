@@ -28,5 +28,10 @@ app.use("/api/users", userRouter);
 import projectRouter from "./routes/project.route.js";
 app.use("/api/projects", projectRouter);
 
+// Log Route registration
 import logRouter from "./routes/log.route.js";
 app.use("/api/logs", logRouter);
+
+// Analytics Route registration
+import analyticsRouter from "./routes/analytics.route.js";
+app.use("/api/analytics", analyticsRouter);
