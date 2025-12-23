@@ -27,3 +27,6 @@ app.use("/api/users", userRouter);
 // Project Route registration
 import projectRouter from "./routes/project.route.js";
 app.use("/api/projects", projectRouter);
+
+import logRouter from "./routes/log.route.js";
+app.use("/api/logs", logRouter);
