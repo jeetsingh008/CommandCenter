@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
+import { LogWorkModal } from "@/components/logWorKModal";
 
 // --- Types ---
 interface DashboardData {
@@ -152,7 +153,7 @@ export default async function ControlPanelPage() {
               <CardTitle>Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <QuickAction label="Log Work Session" />
+              <LogWorkModal projects={projects} />
               <QuickAction label="View Team Settings" />
               <QuickAction label="System Report" />
             </CardContent>
