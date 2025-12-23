@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import Link from "next/link";
-import { AlertCircle, Folder, Zap, Clock, Rocket } from "lucide-react"; // Optional: Use Lucide icons if you have them, or keep emojis
+import { AlertCircle } from "lucide-react"; 
 
 // Shadcn UI Imports
 import { Button } from "@/components/ui/button";
@@ -12,8 +12,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+// Custom Components
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { LogWorkModal } from "@/components/logWorKModal";
+import { RecentActivityList } from "@/components/RecentActivityList"; // ✅ New Import
 
 // --- Types ---
 interface DashboardData {
@@ -24,30 +27,48 @@ interface DashboardData {
   projects: any[];
 }
 
-interface ApiResponse {
-  success: boolean;
-  data: DashboardData;
-  message: string;
+interface LogData {
+  _id: string;
+  title: string;
+  project?: {
+    title: string;
+    color: string;
+  };
+  durationMinutes: number;
+  date: string;
+  category: string;
 }
 
 export default async function ControlPanelPage() {
   let dashboardData: DashboardData | null = null;
+  let recentLogs: LogData[] = [];
   let error = null;
 
   try {
-    const res = (await api.get("users/me")) as ApiResponse;
+    // ⚡ Parallel Data Fetching: Get User/Projects AND Recent Logs at the same time
+    const [userRes, logsRes] = await Promise.all([
+      api.get("users/me"),
+      api.get("logs?limit=10")
+    ]);
 
-    if (res.success && res.data) {
-      dashboardData = res.data;
+    // Process User & Project Data
+    if ((userRes as any).success && (userRes as any).data) {
+      dashboardData = (userRes as any).data;
     } else {
-      error = "Failed to load data";
+      error = "Failed to load user data";
     }
+
+    // Process Logs Data (Non-blocking if this fails, we just show empty list)
+    if ((logsRes as any).success && (logsRes as any).data) {
+      recentLogs = (logsRes as any).data;
+    }
+
   } catch (err: any) {
     console.error("Dashboard Load Error:", err.message);
     error = "System offline";
   }
 
-  // --- Error State (Using Shadcn Alert) ---
+  // --- Error State ---
   if (error || !dashboardData) {
     return (
       <div className="p-12 flex justify-center">
@@ -88,32 +109,29 @@ export default async function ControlPanelPage() {
         <StatCard
           label="Active Projects"
           value={projects.length}
-          icon="📂" // You can replace with <Folder /> from lucide-react
+          icon="📂" 
         />
-        <StatCard label="Pending Tasks" value="8" icon="⚡" />
+        {/* Placeholder Stats - We will wire these up to real data later */}
+        <StatCard label="Recent Logs" value={recentLogs.length} icon="⚡" />
         <StatCard label="Coding Hours" value="12.5h" icon="⏱️" />
         <StatCard label="Efficiency" value="94%" icon="🚀" />
       </div>
 
       {/* MAIN CONTENT AREA */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         {/* Activity Log (Main Chart Area) */}
         <Card className="lg:col-span-2 min-h-[400px] flex flex-col">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Activity Log
+              Activity Feed
             </CardTitle>
-            <CardDescription>Your recent development velocity.</CardDescription>
+            <CardDescription>Your recent development sessions.</CardDescription>
           </CardHeader>
           <CardContent className="flex-1">
-            {/* Placeholder for Chart */}
-            <div className="h-full min-h-[250px] flex items-center justify-center border-2 border-dashed rounded-lg bg-muted/50">
-              <div className="text-center text-muted-foreground">
-                <p>Activity Graph Module</p>
-                <p className="text-xs mt-1 opacity-50">(Coming in Phase 3)</p>
-              </div>
-            </div>
+            {/* ✅ The New Activity List Component */}
+            <RecentActivityList logs={recentLogs} />
           </CardContent>
         </Card>
 
@@ -129,7 +147,7 @@ export default async function ControlPanelPage() {
                 projects.slice(0, 3).map((proj: any) => (
                   <Button
                     key={proj._id}
-                    variant="secondary" // "secondary" usually looks like a light gray background
+                    variant="secondary"
                     className="w-full justify-between h-auto py-3 px-4 group"
                   >
                     <span>{proj.title}</span>
@@ -164,7 +182,7 @@ export default async function ControlPanelPage() {
   );
 }
 
-// --- Local Components (Refactored to use Shadcn Cards) ---
+// --- Local Components ---
 
 function StatCard({
   label,
@@ -173,7 +191,7 @@ function StatCard({
 }: {
   label: string;
   value: string | number;
-  icon: string; // Or React.ReactNode if using Lucide
+  icon: string;
 }) {
   return (
     <Card>
