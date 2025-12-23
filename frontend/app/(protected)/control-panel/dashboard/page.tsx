@@ -7,27 +7,39 @@ import { AppRadialChart } from "@/components/AppRadialChart";
 
 const DashboardPage = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
-      <div className="p-4 bg-card rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+    <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-4 grid-flow-dense">
+      
+      {/* BIG */}
+      <div className="p-3 bg-card rounded-lg lg:col-span-2 xl:col-span-2">
         <AppBarChart />
       </div>
-      <div className="p-4 bg-card rounded-lg">
+
+      {/* SMALL */}
+      <div className="p-3 bg-card rounded-lg">
         <AppPieChart />
       </div>
-      <div className="p-4 bg-card rounded-lg">
+
+      <div className="p-3 bg-card rounded-lg">
         <AppRadialChart />
       </div>
-      <div className="p-4 bg-card rounded-lg">
+
+      <div className="p-3 bg-card rounded-lg">
         <AppRadarChart />
       </div>
-      <div className="p-4 bg-card rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+
+      {/* BIG */}
+      <div className="p-3 bg-card rounded-lg lg:col-span-2 xl:col-span-2">
         <AppAreaChart />
       </div>
-      <div className="p-4 bg-card rounded-lg">
+
+      {/* SMALL */}
+      <div className="p-3 bg-card rounded-lg">
         <AppPieChartStacked />
       </div>
+
     </div>
   );
 };
 
 export default DashboardPage;
+
