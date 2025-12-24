@@ -45,20 +45,17 @@ export default async function ControlPanelPage() {
   let error = null;
 
   try {
-    // ⚡ Parallel Data Fetching: Get User/Projects AND Recent Logs at the same time
     const [userRes, logsRes] = await Promise.all([
       api.get("users/me"),
       api.get("logs?limit=10")
     ]);
 
-    // Process User & Project Data
     if ((userRes as any).success && (userRes as any).data) {
       dashboardData = (userRes as any).data;
     } else {
       error = "Failed to load user data";
     }
 
-    // Process Logs Data (Non-blocking if this fails, we just show empty list)
     if ((logsRes as any).success && (logsRes as any).data) {
       recentLogs = (logsRes as any).data;
     }
@@ -68,7 +65,6 @@ export default async function ControlPanelPage() {
     error = "System offline";
   }
 
-  // --- Error State ---
   if (error || !dashboardData) {
     return (
       <div className="p-12 flex justify-center">
@@ -88,7 +84,6 @@ export default async function ControlPanelPage() {
 
   const { user, projects } = dashboardData;
 
-  // --- Main Render ---
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* HEADER */}
@@ -182,7 +177,6 @@ export default async function ControlPanelPage() {
   );
 }
 
-// --- Local Components ---
 
 function StatCard({
   label,
