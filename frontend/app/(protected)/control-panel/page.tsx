@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
-import Link from "next/link";
-import { AlertCircle } from "lucide-react"; 
+// import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 
 // Shadcn UI Imports
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Custom Components
 import { CreateProjectModal } from "@/components/CreateProjectModal";
-import { LogWorkModal } from "@/components/logWorKModal";
-import { RecentActivityList } from "@/components/RecentActivityList"; // ✅ New Import
+import { LogWorkModal } from "@/components/logWorKModal"; // Fixed casing import
+import { RecentActivityList } from "@/components/RecentActivityList";
+import { ActivityChart } from "@/components/ActivityChart";
 
 // --- Types ---
 interface DashboardData {
@@ -43,28 +44,41 @@ export default async function ControlPanelPage() {
   let dashboardData: DashboardData | null = null;
   let recentLogs: LogData[] = [];
   let error = null;
+  let weeklyStats: any[] = [];
+  let totalHours = "0.0";
 
   try {
-    const [userRes, logsRes] = await Promise.all([
+    // ⚡ Parallel Data Fetching
+    const [userRes, logsRes, analyticsRes] = await Promise.all([
       api.get("users/me"),
-      api.get("logs?limit=10")
+      api.get("logs?limit=10"),
+      api.get("analytics/weekly"),
     ]);
 
+    // 1. Handle User Data
     if ((userRes as any).success && (userRes as any).data) {
       dashboardData = (userRes as any).data;
     } else {
       error = "Failed to load user data";
     }
 
+    // 2. Handle Logs Data
     if ((logsRes as any).success && (logsRes as any).data) {
       recentLogs = (logsRes as any).data;
     }
 
+    // 3. Handle Analytics Data
+    if ((analyticsRes as any).success) {
+      // ✅ Corrected key access based on your backend response
+      weeklyStats = (analyticsRes as any).data.weekly; 
+      totalHours = (analyticsRes as any).data.totalHours;
+    }
   } catch (err: any) {
     console.error("Dashboard Load Error:", err.message);
     error = "System offline";
   }
 
+  // --- Error State ---
   if (error || !dashboardData) {
     return (
       <div className="p-12 flex justify-center">
@@ -84,6 +98,7 @@ export default async function ControlPanelPage() {
 
   const { user, projects } = dashboardData;
 
+  // --- Main Render ---
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* HEADER */}
@@ -101,14 +116,9 @@ export default async function ControlPanelPage() {
 
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Active Projects"
-          value={projects.length}
-          icon="📂" 
-        />
-        {/* Placeholder Stats - We will wire these up to real data later */}
+        <StatCard label="Active Projects" value={projects.length} icon="📂" />
         <StatCard label="Recent Logs" value={recentLogs.length} icon="⚡" />
-        <StatCard label="Coding Hours" value="12.5h" icon="⏱️" />
+        <StatCard label="Coding Hours" value={`${totalHours}h`} icon="⏱️" />
         <StatCard label="Efficiency" value="94%" icon="🚀" />
       </div>
 
@@ -116,7 +126,7 @@ export default async function ControlPanelPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Activity Log (Main Chart Area) */}
-        <Card className="lg:col-span-2 min-h-[400px] flex flex-col">
+        <Card className="lg:col-span-2 flex flex-col">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -124,10 +134,20 @@ export default async function ControlPanelPage() {
             </CardTitle>
             <CardDescription>Your recent development sessions.</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1">
-            {/* ✅ The New Activity List Component */}
-            <RecentActivityList logs={recentLogs} />
+          
+          {/* 👇 KEY FIX: Removed flex-1, added explicit p-0 and inner div with explicit height */}
+          <CardContent className="p-0">
+             <div className="h-[300px] w-full p-4">
+                <ActivityChart data={weeklyStats} />
+             </div>
           </CardContent>
+
+          <div className="px-6 pb-6 pt-4 border-t border-gray-800/50">
+            <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+              Recent History
+            </h3>
+            <RecentActivityList logs={recentLogs} />
+          </div>
         </Card>
 
         {/* Side Panel */}
@@ -177,6 +197,7 @@ export default async function ControlPanelPage() {
   );
 }
 
+// --- Local Components ---
 
 function StatCard({
   label,
