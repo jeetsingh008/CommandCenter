@@ -62,7 +62,7 @@ export function ActivityChart({ data }: { data: ChartData[] }) {
         />
         <Bar
           dataKey="minutes"
-          fill="#3B82F6"
+          fill={`var(--chart-3)`}
           radius={[4, 4, 0, 0]}
           barSize={40}
         />

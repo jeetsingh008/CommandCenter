@@ -19,7 +19,6 @@ import { LogWorkModal } from "@/components/logWorKModal"; // Fixed casing import
 import { RecentActivityList } from "@/components/RecentActivityList";
 import { ActivityChart } from "@/components/ActivityChart";
 
-// --- Types ---
 interface DashboardData {
   user: {
     name: string;
@@ -48,28 +47,23 @@ export default async function ControlPanelPage() {
   let totalHours = "0.0";
 
   try {
-    // ⚡ Parallel Data Fetching
     const [userRes, logsRes, analyticsRes] = await Promise.all([
       api.get("users/me"),
       api.get("logs?limit=10"),
       api.get("analytics/weekly"),
     ]);
 
-    // 1. Handle User Data
     if ((userRes as any).success && (userRes as any).data) {
       dashboardData = (userRes as any).data;
     } else {
       error = "Failed to load user data";
     }
 
-    // 2. Handle Logs Data
     if ((logsRes as any).success && (logsRes as any).data) {
       recentLogs = (logsRes as any).data;
     }
 
-    // 3. Handle Analytics Data
     if ((analyticsRes as any).success) {
-      // ✅ Corrected key access based on your backend response
       weeklyStats = (analyticsRes as any).data.weekly; 
       totalHours = (analyticsRes as any).data.totalHours;
     }
