@@ -130,6 +130,29 @@ export async function createProjectAction(formData: {
   }
 }
 
+export async function createLogAction(data: {
+  title: string;
+  description?: string;
+  durationMinutes: number;
+  date: string;
+  projectId?: string;
+  category: string;
+}) {
+  try {
+    const res: any = await api.post("logs", data);
+
+    if (res.success) {
+      revalidatePath("/control-panel"); // Refresh dashboard stats
+      return { success: true, data: res.data };
+    }
+
+    return { success: false, error: res.message || "Failed to log session" };
+  } catch (error: any) {
+    console.error("Log Action Error:", error);
+    return { success: false, error: error.message || "System Error" };
+  }
+}
+
 /* =========================
    LOGOUT USER ---> for future use
    ========================= */

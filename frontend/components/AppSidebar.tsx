@@ -1,17 +1,16 @@
+"use client";
+
 import {
   Home,
-  Inbox,
-  Calendar,
-  Search,
   Settings,
   BrickWallFire,
   User2,
   ChevronUp,
-  User,
   LogOut,
   Plus,
-  Projector,
-  ChevronDown,
+  Folder,
+  CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,204 +22,188 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarSeparator,
-} from "./ui/sidebar";
+} from "@/components/ui/sidebar";
 import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
+} from "@/components/ui/dropdown-menu"; // Ensure this import path is correct for Shadcn
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { signOut } from "next-auth/react"; // Assuming you use NextAuth/Auth.js
 
-const items = [
-  {
-    title: "Dashboard",
-    url: "/control-panel/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+// Define the Props based on what we pass from layout.tsx
+interface AppSidebarProps {
+  user: {
+    name: string;
+    email: string;
+  };
+  projects: {
+    _id: string;
+    title: string;
+    color?: string;
+  }[];
+}
 
-const AppSidebar = () => {
+const AppSidebar = ({ user, projects }: AppSidebarProps) => {
   return (
     <Sidebar collapsible="icon">
+      {/* --- HEADER --- */}
       <SidebarHeader className="py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/">
-                {/* For future implementation of logo */}
-                {/* <Image src="/logo.svg" alt="logo" width={20} height={20} /> */}
-                <BrickWallFire />
-                <span>CommandCenter</span>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/control-panel">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-blue-600 text-sidebar-primary-foreground">
+                  <BrickWallFire className="size-4 text-white" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">CommandCenter</span>
+                  <span className="truncate text-xs">v1.0.0</span>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarSeparator />
+
       <SidebarContent>
+        {/* --- MAIN APPLICATION LINKS --- */}
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                  {item.title === "Inbox" && (
-                    <SidebarMenuBadge>28</SidebarMenuBadge>
-                  )}
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Dashboard">
+                  <Link href="/control-panel">
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Settings">
+                  <Link href="/control-panel/settings">
+                    <Settings />
+                    <span>Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* --- PROJECTS LIST --- */}
         <SidebarGroup>
           <SidebarGroupLabel>Projects</SidebarGroupLabel>
-          <SidebarGroupAction>
-            <span className="sr-only">Add Project</span>
-            <Plus className="text-sidebar-foregroun" />
+          <SidebarGroupAction title="Add Project">
+            <Plus /> <span className="sr-only">Add Project</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="#">
-                    <Projector />
-                    See All Projects
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="#">
-                    <Plus />
-                    Add Project
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        {/* Nested */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Nested</SidebarGroupLabel>
-          <SidebarGroupAction>
-            <span className="sr-only">Add Project</span>
-          </SidebarGroupAction>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuSub>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton>
-                      <Projector />
-                      Project Alpha
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton>
-                      <Projector />
-                      Project Beta
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                </SidebarMenuSub>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        {/* Collapsible */}
-        <Collapsible defaultOpen className="group/collapsible">
-          <SidebarGroup>
-            <SidebarGroupLabel asChild>
-              <CollapsibleTrigger>
-                Collapsible
-                <ChevronDown className="ml-auto transition-transform duration-200 ease-in-out group-data-[state=open]/collapsible:rotate-180" />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
+              {/* Dynamic Project List */}
+              {projects.length > 0 ? (
+                projects.map((project) => (
+                  <SidebarMenuItem key={project._id}>
+                    <SidebarMenuButton asChild>
+                      <Link href={`/control-panel/projects/${project._id}`}>
+                        <span
+                          className="flex h-2 w-2 rounded-full mr-2"
+                          style={{
+                            backgroundColor: project.color || "#3B82F6",
+                          }}
+                        />
+                        <span>{project.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))
+              ) : (
+                <div className="p-4 text-xs text-muted-foreground text-center border border-dashed rounded-md m-2">
+                  No projects yet.
+                </div>
+              )}
 
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="#">
-                        <Projector />
-                        Item 1
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="#">
-                        <Plus />
-                        Add Item
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+              {/* View All Button */}
+              <SidebarMenuItem>
+                <SidebarMenuButton className="text-muted-foreground">
+                  <Folder />
+                  <span>View All Projects</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+
+      {/* --- FOOTER (USER MENU) --- */}
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Jeet Singh <ChevronUp className="ml-auto" />
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    {/* Fallback to Initials */}
+                    <AvatarFallback className="rounded-lg">
+                      {user.name?.substring(0, 2).toUpperCase() || "CN"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{user.name}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
+                  <ChevronUp className="ml-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="space-y-1">
-                <DropdownMenuItem className="flex items-center gap-2">
-                  {" "}
-                  <User className="h-5 w-5" /> <span>Account</span>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side="top"
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarFallback className="rounded-lg">
+                        {user.name?.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {user.name}
+                      </span>
+                      <span className="truncate text-xs">{user.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Billing
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  {" "}
-                  <Settings className="h-5 w-5" /> Settings
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  {" "}
-                  <LogOut className="h-5 w-5" /> Sign out
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-red-500 focus:text-red-500"
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

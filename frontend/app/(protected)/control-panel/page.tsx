@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
-import Link from "next/link";
-import { AlertCircle, Folder, Zap, Clock, Rocket } from "lucide-react"; // Optional: Use Lucide icons if you have them, or keep emojis
+// import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 
 // Shadcn UI Imports
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CreateProjectModal } from "@/components/CreateProjectModal";
 
-// --- Types ---
+// Custom Components
+import { CreateProjectModal } from "@/components/CreateProjectModal";
+import { LogWorkModal } from "@/components/logWorKModal"; // Fixed casing import
+import { RecentActivityList } from "@/components/RecentActivityList";
+import { ActivityChart } from "@/components/ActivityChart";
+
 interface DashboardData {
   user: {
     name: string;
@@ -23,30 +27,52 @@ interface DashboardData {
   projects: any[];
 }
 
-interface ApiResponse {
-  success: boolean;
-  data: DashboardData;
-  message: string;
+interface LogData {
+  _id: string;
+  title: string;
+  project?: {
+    title: string;
+    color: string;
+  };
+  durationMinutes: number;
+  date: string;
+  category: string;
 }
 
 export default async function ControlPanelPage() {
   let dashboardData: DashboardData | null = null;
+  let recentLogs: LogData[] = [];
   let error = null;
+  let weeklyStats: any[] = [];
+  let totalHours = "0.0";
 
   try {
-    const res = (await api.get("users/me")) as ApiResponse;
+    const [userRes, logsRes, analyticsRes] = await Promise.all([
+      api.get("users/me"),
+      api.get("logs?limit=10"),
+      api.get("analytics/weekly"),
+    ]);
 
-    if (res.success && res.data) {
-      dashboardData = res.data;
+    if ((userRes as any).success && (userRes as any).data) {
+      dashboardData = (userRes as any).data;
     } else {
-      error = "Failed to load data";
+      error = "Failed to load user data";
+    }
+
+    if ((logsRes as any).success && (logsRes as any).data) {
+      recentLogs = (logsRes as any).data;
+    }
+
+    if ((analyticsRes as any).success) {
+      weeklyStats = (analyticsRes as any).data.weekly; 
+      totalHours = (analyticsRes as any).data.totalHours;
     }
   } catch (err: any) {
     console.error("Dashboard Load Error:", err.message);
     error = "System offline";
   }
 
-  // --- Error State (Using Shadcn Alert) ---
+  // --- Error State ---
   if (error || !dashboardData) {
     return (
       <div className="p-12 flex justify-center">
@@ -84,36 +110,38 @@ export default async function ControlPanelPage() {
 
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Active Projects"
-          value={projects.length}
-          icon="📂" // You can replace with <Folder /> from lucide-react
-        />
-        <StatCard label="Pending Tasks" value="8" icon="⚡" />
-        <StatCard label="Coding Hours" value="12.5h" icon="⏱️" />
+        <StatCard label="Active Projects" value={projects.length} icon="📂" />
+        <StatCard label="Recent Logs" value={recentLogs.length} icon="⚡" />
+        <StatCard label="Coding Hours" value={`${totalHours}h`} icon="⏱️" />
         <StatCard label="Efficiency" value="94%" icon="🚀" />
       </div>
 
       {/* MAIN CONTENT AREA */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         {/* Activity Log (Main Chart Area) */}
-        <Card className="lg:col-span-2 min-h-[400px] flex flex-col">
+        <Card className="lg:col-span-2 flex flex-col">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Activity Log
+              Activity Feed
             </CardTitle>
-            <CardDescription>Your recent development velocity.</CardDescription>
+            <CardDescription>Your recent development sessions.</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1">
-            {/* Placeholder for Chart */}
-            <div className="h-full min-h-[250px] flex items-center justify-center border-2 border-dashed rounded-lg bg-muted/50">
-              <div className="text-center text-muted-foreground">
-                <p>Activity Graph Module</p>
-                <p className="text-xs mt-1 opacity-50">(Coming in Phase 3)</p>
-              </div>
-            </div>
+          
+          {/* 👇 KEY FIX: Removed flex-1, added explicit p-0 and inner div with explicit height */}
+          <CardContent className="p-0">
+             <div className="h-[300px] w-full p-4">
+                <ActivityChart data={weeklyStats} />
+             </div>
           </CardContent>
+
+          <div className="px-6 pb-6 pt-4 border-t border-gray-800/50">
+            <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+              Recent History
+            </h3>
+            <RecentActivityList logs={recentLogs} />
+          </div>
         </Card>
 
         {/* Side Panel */}
@@ -128,7 +156,7 @@ export default async function ControlPanelPage() {
                 projects.slice(0, 3).map((proj: any) => (
                   <Button
                     key={proj._id}
-                    variant="secondary" // "secondary" usually looks like a light gray background
+                    variant="secondary"
                     className="w-full justify-between h-auto py-3 px-4 group"
                   >
                     <span>{proj.title}</span>
@@ -152,7 +180,7 @@ export default async function ControlPanelPage() {
               <CardTitle>Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <QuickAction label="Log Work Session" />
+              <LogWorkModal projects={projects} />
               <QuickAction label="View Team Settings" />
               <QuickAction label="System Report" />
             </CardContent>
@@ -163,7 +191,7 @@ export default async function ControlPanelPage() {
   );
 }
 
-// --- Local Components (Refactored to use Shadcn Cards) ---
+// --- Local Components ---
 
 function StatCard({
   label,
@@ -172,7 +200,7 @@ function StatCard({
 }: {
   label: string;
   value: string | number;
-  icon: string; // Or React.ReactNode if using Lucide
+  icon: string;
 }) {
   return (
     <Card>
