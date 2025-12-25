@@ -1,16 +1,14 @@
 "use client";
 
 import {
-  Home,
   Settings,
   BrickWallFire,
-  User2,
   ChevronUp,
   LogOut,
   Plus,
   Folder,
-  CreditCard,
   LayoutDashboard,
+  CreditCard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,11 +32,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // Ensure this import path is correct for Shadcn
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { signOut } from "next-auth/react"; // Assuming you use NextAuth/Auth.js
+import { signOut } from "next-auth/react";
 
-// Define the Props based on what we pass from layout.tsx
+// 👇 1. Import the Timer Component
+import { FocusTimer } from "./FocusTimer";
+
 interface AppSidebarProps {
   user: {
     name: string;
@@ -76,6 +76,12 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
       <SidebarSeparator />
 
       <SidebarContent>
+        {/* 👇 2. MOUNT THE TIMER HERE (Top of Content) */}
+        {/* We pass the projects list so the Modal inside the timer knows what to log to */}
+        <div className="mt-2">
+          <FocusTimer projects={projects} />
+        </div>
+
         {/* --- MAIN APPLICATION LINKS --- */}
         <SidebarGroup>
           <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -109,7 +115,6 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Dynamic Project List */}
               {projects.length > 0 ? (
                 projects.map((project) => (
                   <SidebarMenuItem key={project._id}>
@@ -132,7 +137,6 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                 </div>
               )}
 
-              {/* View All Button */}
               <SidebarMenuItem>
                 <SidebarMenuButton className="text-muted-foreground">
                   <Folder />
@@ -155,7 +159,6 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    {/* Fallback to Initials */}
                     <AvatarFallback className="rounded-lg">
                       {user.name?.substring(0, 2).toUpperCase() || "CN"}
                     </AvatarFallback>

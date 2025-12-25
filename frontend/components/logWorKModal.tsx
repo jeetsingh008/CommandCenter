@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ✅ Added useEffect
 import { createLogAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,31 +23,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation"; // ✅ Added router for refresh
 
-// Define what a Project looks like (minimized)
 type Project = {
   _id: string;
   title: string;
 };
 
 interface LogWorkModalProps {
-  projects: Project[]; // We pass projects down to populate the dropdown
-  trigger?: React.ReactNode; // Optional custom trigger button
+  projects: Project[];
+  trigger?: React.ReactNode;
+  initialDuration?: number; // 👈 New Prop: Time from timer
+  onSuccess?: () => void;   // 👈 New Prop: To reset timer
 }
 
-export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
+export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: LogWorkModalProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  // Form State
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    durationMinutes: "", // Keep as string for input, convert later
-    date: new Date().toISOString().split("T")[0], // Default to Today (YYYY-MM-DD)
+    durationMinutes: "",
+    date: new Date().toISOString().split("T")[0],
     category: "Coding",
     projectId: "",
   });
+
+  // 👇 SYNC FORM WITH TIMER: When modal opens, use the timer's duration
+  useEffect(() => {
+    if (open && initialDuration && initialDuration > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        durationMinutes: String(initialDuration),
+      }));
+    }
+  }, [open, initialDuration]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +74,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
 
       if (result.success) {
         setOpen(false);
-        // Reset form but keep date/category for convenience
+        // Reset form
         setFormData((prev) => ({
           ...prev,
           title: "",
@@ -70,6 +82,13 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
           durationMinutes: "",
         }));
         toast.success("Work logged successfully!", { id: toastId });
+        
+        // Refresh page to show new logs
+        router.refresh();
+
+        // 👈 Notify the Timer (or parent) that we are done
+        if (onSuccess) onSuccess(); 
+
       } else {
         toast.error(result.error, { id: toastId });
       }
@@ -98,6 +117,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
             </DialogDescription>
           </DialogHeader>
 
+          {/* ... (The rest of your JSX inputs remain exactly the same) ... */}
           <div className="grid gap-4 py-4">
             {/* Row 1: Title */}
             <div className="grid gap-2">
@@ -106,9 +126,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
                 id="log-title"
                 placeholder="e.g. Implemented Auth Middleware"
                 value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
               />
             </div>
@@ -123,12 +141,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
                   placeholder="60"
                   min="1"
                   value={formData.durationMinutes}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      durationMinutes: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setFormData({ ...formData, durationMinutes: e.target.value })}
                   required
                 />
               </div>
@@ -138,9 +151,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
                   id="date"
                   type="date"
                   value={formData.date}
-                  onChange={(e) =>
-                    setFormData({ ...formData, date: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   required
                 />
               </div>
@@ -152,9 +163,7 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
                 <Label>Project</Label>
                 <Select
                   value={formData.projectId}
-                  onValueChange={(val) =>
-                    setFormData({ ...formData, projectId: val })
-                  }
+                  onValueChange={(val) => setFormData({ ...formData, projectId: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Project" />
@@ -167,53 +176,37 @@ export function LogWorkModal({ projects, trigger }: LogWorkModalProps) {
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="none" disabled>
-                        No Projects Found
-                      </SelectItem>
+                      <SelectItem value="none" disabled>No Projects Found</SelectItem>
                     )}
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="grid gap-2">
                 <Label>Category</Label>
                 <Select
                   value={formData.category}
-                  onValueChange={(val) =>
-                    setFormData({ ...formData, category: val })
-                  }
+                  onValueChange={(val) => setFormData({ ...formData, category: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[
-                      "Coding",
-                      "Design",
-                      "Learning",
-                      "Meeting",
-                      "Planning",
-                      "Bug Fix",
-                    ].map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
+                    {["Coding", "Design", "Learning", "Meeting", "Planning", "Bug Fix"].map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Row 4: Description (Optional) */}
+            {/* Row 4: Description */}
             <div className="grid gap-2">
               <Label htmlFor="desc">Notes (Optional)</Label>
               <Textarea
                 id="desc"
                 placeholder="Detailed notes about what you accomplished..."
                 value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
           </div>
