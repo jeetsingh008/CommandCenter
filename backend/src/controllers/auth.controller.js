@@ -21,9 +21,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
   }
 };
 
-// @desc    Sync User from NextAuth (GitHub)
-// @route   POST /api/auth/github/sync
-// @access  Public (Secured by NextAuth on frontend)
 export const syncGitHubUser = asyncHandler(async (req, res) => {
   const { githubId, email, username, accessToken } = req.body;
 
@@ -49,21 +46,19 @@ export const syncGitHubUser = asyncHandler(async (req, res) => {
         email,
         githubId,
         githubAccessToken: accessToken,
-        password: `oauth-${Date.now()}-${githubId}`, // Random password for OAuth users
+        password: `oauth-${Date.now()}-${githubId}`,
       });
     }
   }
 
-  // Generate tokens for the session
   const { accessToken: apiToken, refreshToken } =
     await generateAccessAndRefereshTokens(user._id);
 
-  // FIX: Using ApiResponse for consistency, and ensuring 'token' key exists for frontend
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        token: apiToken, // Frontend 'jwt' callback expects 'data.token'
+        token: apiToken,
         user: {
           id: user._id,
           username: user.username,
@@ -77,9 +72,6 @@ export const syncGitHubUser = asyncHandler(async (req, res) => {
   );
 });
 
-// @desc    Register User
-// @route   POST /api/auth/register
-// @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -121,9 +113,6 @@ export const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
-// @desc    Login User
-// @route   POST /api/auth/login
-// @access  Public
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -168,9 +157,6 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-// @desc    Change Password
-// @route   POST /api/auth/change-password
-// @access  Private
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
@@ -189,18 +175,12 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
-// @desc    Get Current User
-// @route   GET /api/auth/current-user
-// @access  Private
 export const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, req.user, "User fetched successfully"));
 });
 
-// @desc    Update Account Details
-// @route   PATCH /api/auth/update-account
-// @access  Private
 export const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
 
@@ -224,9 +204,6 @@ export const updateAccountDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"));
 });
 
-//@desc    Update User Avatar
-//@route   PATCH /api/auth/avatar
-//@access  Private
 export const updateUserAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path;
 
