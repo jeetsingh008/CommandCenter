@@ -6,7 +6,6 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // ✅ Fetch session using the new auth() function
   const session = await auth();
 
   if (!session) {
