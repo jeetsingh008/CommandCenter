@@ -9,12 +9,10 @@ const DashboardPage = () => {
   return (
     <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-4 grid-flow-dense">
       
-      {/* BIG */}
       <div className="p-3 bg-card rounded-lg lg:col-span-2 xl:col-span-2">
         <AppBarChart />
       </div>
 
-      {/* SMALL */}
       <div className="p-3 bg-card rounded-lg">
         <AppPieChart />
       </div>
@@ -27,12 +25,10 @@ const DashboardPage = () => {
         <AppRadarChart />
       </div>
 
-      {/* BIG */}
       <div className="p-3 bg-card rounded-lg lg:col-span-2 xl:col-span-2">
         <AppAreaChart />
       </div>
 
-      {/* SMALL */}
       <div className="p-3 bg-card rounded-lg">
         <AppPieChartStacked />
       </div>
