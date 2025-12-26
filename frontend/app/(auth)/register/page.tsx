@@ -54,7 +54,6 @@ export default function RegisterPage() {
               })
             }
           >
-            {/* You would add a GitHub icon here */}
             <svg className="mr-2 h-4 w-4" /*...GitHub SVG path... */>
               {/* Placeholder for icon */}
             </svg>
@@ -96,7 +95,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Display error messages from the server */}
             {state?.message && (
               <p className="text-sm text-red-500">{state.message}</p>
             )}

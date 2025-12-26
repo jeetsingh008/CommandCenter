@@ -3,7 +3,6 @@ import { api } from "@/lib/api";
 // import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 
-// Shadcn UI Imports
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,9 +13,8 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-// Custom Components
 import { CreateProjectModal } from "@/components/CreateProjectModal";
-import { LogWorkModal } from "@/components/logWorKModal"; // Fixed casing import
+import { LogWorkModal } from "@/components/logWorKModal";
 import { RecentActivityList } from "@/components/RecentActivityList";
 import { ActivityChart } from "@/components/ActivityChart";
 
@@ -73,7 +71,6 @@ export default async function ControlPanelPage() {
     error = "System offline";
   }
 
-  // --- Error State ---
   if (error || !dashboardData) {
     return (
       <div className="p-12 flex justify-center">
@@ -93,7 +90,6 @@ export default async function ControlPanelPage() {
 
   const { user, projects } = dashboardData;
 
-  // --- Main Render ---
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* HEADER */}
@@ -129,9 +125,8 @@ export default async function ControlPanelPage() {
             <CardDescription>Your recent development sessions.</CardDescription>
           </CardHeader>
 
-          {/* 👇 KEY FIX: Removed flex-1, added explicit p-0 and inner div with explicit height */}
           <CardContent className="p-0">
-            <div className="h-[300px] w-full p-4">
+            <div className="h-75 w-full p-4">
               <ActivityChart data={weeklyStats} />
             </div>
           </CardContent>
@@ -191,7 +186,6 @@ export default async function ControlPanelPage() {
   );
 }
 
-// --- Local Components ---
 
 function StatCard({
   label,

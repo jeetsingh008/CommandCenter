@@ -11,20 +11,18 @@ import {
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/components/ui/tooltip"; // Optional: for hover on collapsed state
+} from "@/components/ui/tooltip";
 
 export function FocusTimer({ projects }: { projects: any[] }) {
-  const { state } = useSidebar(); // 👈 2. Get State
+  const { state } = useSidebar(); 
   const isCollapsed = state === "collapsed";
 
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Toggle Timer
   const toggle = () => setIsActive(!isActive);
 
-  // Stop Timer
   const handleStopClick = () => {
     setIsActive(false);
   };
@@ -62,7 +60,6 @@ export function FocusTimer({ projects }: { projects: any[] }) {
 
   const minutesEarned = Math.max(1, Math.floor(seconds / 60));
 
-  // --- 3. RENDER COMPACT VIEW (COLLAPSED) ---
   if (isCollapsed) {
     return (
       <div className="flex justify-center w-full py-2">
@@ -79,7 +76,6 @@ export function FocusTimer({ projects }: { projects: any[] }) {
                     : "text-muted-foreground"
                 }
               >
-                {/* If active, show Pause, else show Clock */}
                 {isActive ? (
                   <Pause className="w-4 h-4" />
                 ) : (
@@ -100,7 +96,6 @@ export function FocusTimer({ projects }: { projects: any[] }) {
     );
   }
 
-  // --- 4. RENDER FULL VIEW (EXPANDED) ---
   return (
     <div className="w-full px-2 mb-4 transition-all duration-300 ease-in-out">
       <Card className="bg-sidebar-accent/50 border-sidebar-border shadow-inner">
@@ -120,9 +115,9 @@ export function FocusTimer({ projects }: { projects: any[] }) {
             {formatTime(seconds)}
           </div>
 
-          {/* Controls - Fixed Width Issue */}
+          {/* Controls */}
           <div className="flex w-full gap-2">
-            {/* Play/Pause Button - Changed w-full to flex-1 */}
+            {/* Play/Pause Button */}
             <Button
               size="sm"
               variant={isActive ? "secondary" : "default"}
@@ -136,7 +131,7 @@ export function FocusTimer({ projects }: { projects: any[] }) {
               )}
             </Button>
 
-            {/* Stop Button - Wrapped in Modal */}
+            {/* Stop Button */}
             <LogWorkModal
               projects={projects}
               initialDuration={minutesEarned}
@@ -147,7 +142,7 @@ export function FocusTimer({ projects }: { projects: any[] }) {
                   variant="destructive"
                   onClick={handleStopClick}
                   disabled={seconds === 0}
-                  className="px-3" // Keep this one small/square-ish
+                  className="px-3"
                 >
                   <Square className="w-4 h-4" />
                 </Button>

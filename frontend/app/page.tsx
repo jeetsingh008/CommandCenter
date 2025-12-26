@@ -145,7 +145,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* === NEW SECTION 1: How It Works (Workflow) === */}
         <section className="w-full py-20 md:py-28">
           <div className="container mx-auto grid max-w-5xl gap-12 px-4 md:px-6">
             <div className="grid gap-2 text-center">
@@ -206,7 +205,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* === NEW SECTION 2: Testimonials === */}
+        {/* === Testimonials === */}
         <section className="w-full bg-muted/50 py-20 md:py-28">
           <div className="container mx-auto grid max-w-5xl gap-12 px-4 md:px-6">
             <div className="grid gap-2 text-center">
@@ -255,7 +254,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* === Final CTA Section === */}
+        {/* === CTA Section === */}
         <section className="container mx-auto grid max-w-5xl place-items-center gap-6 py-20 text-center md:py-32">
           <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
             Ready to take control?

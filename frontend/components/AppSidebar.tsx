@@ -76,13 +76,11 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
       <SidebarSeparator />
 
       <SidebarContent>
-        {/* 👇 2. MOUNT THE TIMER HERE (Top of Content) */}
-        {/* We pass the projects list so the Modal inside the timer knows what to log to */}
         <div className="mt-2 overflow-hidden">
           <FocusTimer projects={projects} />
         </div>
 
-        {/* --- MAIN APPLICATION LINKS --- */}
+        {/* --- MAIN LINKS --- */}
         <SidebarGroup>
           <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarGroupContent>

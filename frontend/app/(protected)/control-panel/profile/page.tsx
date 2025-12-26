@@ -20,7 +20,6 @@ const FALLBACK_USER: UserProfile = {
 };
 
 const DashboardHeader = ({ user }: { user?: UserProfile }) => {
-  // ✅ Derived data (NO state, NO effect)
   const userData = user ?? FALLBACK_USER;
 
   const formattedDate = userData.dob

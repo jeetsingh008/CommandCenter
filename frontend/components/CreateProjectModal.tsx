@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner"; // ✅ Already imported
+import { toast } from "sonner"; 
 
 export function CreateProjectModal() {
   const [open, setOpen] = useState(false);
@@ -30,22 +30,18 @@ export function CreateProjectModal() {
     e.preventDefault();
     setLoading(true);
 
-    // 1. Show a loading toast that we can update later
     const toastId = toast.loading("Initializing new project...");
 
     try {
-      // 2. Call the Server Action
       const result = await createProjectAction(formData);
 
       if (result.success) {
-        // ✅ Success: Close modal, reset form, update toast
         setOpen(false);
         setFormData({ title: "", description: "", color: "#3B82F6" });
         toast.success(`Project "${result.data.title}" deployed successfully!`, {
-          id: toastId, // Updates the loading toast
+          id: toastId,
         });
       } else {
-        // ❌ Error: Keep modal open, show error
         toast.error(result.error || "Failed to create project", {
           id: toastId,
         });

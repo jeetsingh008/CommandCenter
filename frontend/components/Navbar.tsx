@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Code2Icon, Menu, X } from "lucide-react";
 
-// Define your navigation links here
 const navItems = [
   { name: "Features", href: "/#features" },
   { name: "Pricing", href: "/pricing" },
@@ -22,7 +21,6 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        {/* --- Logo Section --- */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-2">
             <Code2Icon className="h-6 w-6" />
@@ -30,7 +28,6 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* --- Desktop Navigation --- */}
         <nav className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
             <Link
@@ -48,7 +45,6 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* --- Desktop Auth Buttons --- */}
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" asChild>
             <Link href="/login">Login</Link>
@@ -58,7 +54,6 @@ export function Navbar() {
           </Button>
         </div>
 
-        {/* --- Mobile Menu Toggle --- */}
         <button
           className="flex md:hidden p-2 text-muted-foreground hover:text-foreground"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -72,7 +67,6 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* --- Mobile Menu Content --- */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t bg-background px-4 py-6 shadow-lg animate-in slide-in-from-top-5">
           <nav className="flex flex-col gap-4">
