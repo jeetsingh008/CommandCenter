@@ -80,3 +80,18 @@ The application follows a strict separation between the **Next.js Frontend** (Pr
 ```bash
 git clone [https://github.com/jeetsingh008/command-center.git](https://github.com/jeetsingh008/command-center.git)
 cd command-center
+
+## 🛠️ Backend Setup
+
+```bash
+cd backend
+npm install
+
+```bash
+PORT=8000
+MONGODB_URI=your_mongodb_connection_string
+ACCESS_TOKEN_SECRET=your_access_secret
+REFRESH_TOKEN_SECRET=your_refresh_secret
+ACCESS_TOKEN_EXPIRY=15m
+REFRESH_TOKEN_EXPIRY=7d
+CORS_ORIGIN=http://localhost:3000
