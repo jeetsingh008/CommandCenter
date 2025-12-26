@@ -1,8 +1,6 @@
 import { api } from "@/lib/api";
 import Link from "next/link";
 import { ArrowLeft, Clock, Calendar, MoreVertical, Hash } from "lucide-react";
-
-// Shadcn Components
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,12 +17,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-// Custom Components
 import { RecentActivityList } from "@/components/RecentActivityList";
 import { ActivityChart } from "@/components/ActivityChart";
 
-// Helper to format minutes to "12h 30m"
 function formatDuration(minutes: number) {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
@@ -36,18 +31,17 @@ export default async function ProjectDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // 1. Fetch Data in Parallel
   const projectId = (await params).id;
 
   let project: any = null;
   let logs: any[] = [];
-  let weeklyStats: any[] = []; // We will compute this from logs for now
+  let weeklyStats: any[] = [];
   let error = null;
 
   try {
     const [projectRes, logsRes] = await Promise.all([
       api.get(`projects/${projectId}`),
-      api.get(`logs?projectId=${projectId}&limit=50`), // Get last 50 logs for charts
+      api.get(`logs?projectId=${projectId}&limit=50`),
     ]);
     console.log(projectRes);
 
@@ -58,22 +52,19 @@ export default async function ProjectDetailsPage({
       logs = (logsRes as any).data;
     }
 
-    // Client-side aggregation for the chart (Simple version)
-    // We group the fetched logs by date to show activity specifically for this project
     const statsMap = new Map();
     logs.forEach((log: any) => {
-      const date = log.date.split("T")[0]; // YYYY-MM-DD
+      const date = log.date.split("T")[0];
       const current = statsMap.get(date) || 0;
       statsMap.set(date, current + log.durationMinutes);
     });
 
-    // Convert Map to Array for Chart
     weeklyStats = Array.from(statsMap, ([date, totalMinutes]) => ({
       _id: date,
       totalMinutes,
     }))
       .sort((a, b) => a._id.localeCompare(b._id))
-      .slice(-7); // Last 7 active days
+      .slice(-7);
   } catch (err) {
     error = "Failed to load project";
   }
@@ -85,7 +76,7 @@ export default async function ProjectDetailsPage({
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      {/* --- HEADER SECTION --- */}
+      {/* --- Header Section --- */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-muted-foreground mb-2 text-sm">
@@ -128,7 +119,6 @@ export default async function ProjectDetailsPage({
         </div>
       </div>
 
-      {/* --- KPI CARDS --- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-card/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -171,7 +161,7 @@ export default async function ProjectDetailsPage({
         </Card>
       </div>
 
-      {/* --- TABS SECTION --- */}
+      {/* --- Tabs Section --- */}
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
