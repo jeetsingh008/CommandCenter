@@ -2,19 +2,16 @@
 
 import { redirect } from "next/navigation";
 import { signIn } from "@/lib/auth";
-import { api } from "@/lib/api"; 
-import { revalidatePath } from "next/cache"; 
+import { api } from "@/lib/api"; // 👈 Add this
+import { revalidatePath } from "next/cache"; //
+import { API_URL } from "./config";
 
 type FormState = {
   message: string;
 };
 
-// 👇 1. DEFINE THE URL MANUALLY TO FORCE THE CONNECTION
-// We are hardcoding this to ensure it stops trying to connect to Vercel/Localhost
-const BACKEND_URL = "https://commandcenter-gkjz.onrender.com/api";
-
 /* =========================
-   REGISTER USER
+   REGISTER USER (Unchanged)
    ========================= */
 export async function registerUser(
   prevState: FormState,
@@ -33,25 +30,11 @@ export async function registerUser(
   }
 
   try {
-    console.log(`Attempting to register user: ${email} at ${BACKEND_URL}`);
-
-    // 👇 2. USE THE HARDCODED URL HERE
-    const res = await fetch(
-      `${BACKEND_URL}/auth/register`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      }
-    );
-
-    // Check if the response is actually JSON before parsing
-    const contentType = res.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-       const text = await res.text();
-       console.error("Non-JSON Response received:", text);
-       throw new Error("Server returned HTML instead of JSON. Check Backend URL.");
-    }
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
     const data = await res.json();
 
@@ -59,7 +42,6 @@ export async function registerUser(
       return { message: data.message || "Registration failed." };
     }
   } catch (error) {
-    console.error("Registration Error:", error);
     if (error instanceof Error) {
       return { message: `Registration failed: ${error.message}` };
     }
@@ -70,7 +52,7 @@ export async function registerUser(
 }
 
 /* =========================
-   LOGIN USER
+   LOGIN USER (Updated for Debugging)
    ========================= */
 export async function loginUser(
   prevState: FormState,
@@ -90,12 +72,14 @@ export async function loginUser(
       redirect: false,
     });
   } catch (error) {
+    // 1. Let Next.js Redirects pass through (Successful login)
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
 
     const err = error as any;
 
+    // 2. Check for Credential Errors (Invalid login)
     if (
       err.type === "CredentialsSignin" ||
       err.code === "credentials" ||
@@ -104,6 +88,8 @@ export async function loginUser(
       return { message: "Invalid email or password." };
     }
 
+    // 3. 🛑 DEBUGGING: Return the REAL error message to the UI
+    // This will tell us if it's a Database error, Fetch error, or Config error
     console.error("Login Error Details:", JSON.stringify(err, null, 2));
 
     return {
@@ -117,7 +103,7 @@ export async function loginUser(
 }
 
 /* =========================
-   CREATE PROJECT ACTION
+   🆕 CREATE PROJECT ACTION
    ========================= */
 export async function createProjectAction(formData: {
   title: string;
@@ -125,9 +111,12 @@ export async function createProjectAction(formData: {
   color: string;
 }) {
   try {
+    // This runs securely on the server
+    // api.post uses the headers from auth(), so the token is attached automatically
     const res: any = await api.post("projects", formData);
 
     if (res.success) {
+      // Refresh the dashboard so the new project shows up immediately
       revalidatePath("/control-panel");
       return { success: true, data: res.data };
     }
@@ -151,7 +140,7 @@ export async function createLogAction(data: {
     const res: any = await api.post("logs", data);
 
     if (res.success) {
-      revalidatePath("/control-panel"); 
+      revalidatePath("/control-panel"); // Refresh dashboard stats
       return { success: true, data: res.data };
     }
 
@@ -161,3 +150,12 @@ export async function createLogAction(data: {
     return { success: false, error: error.message || "System Error" };
   }
 }
+
+/* =========================
+   LOGOUT USER ---> for future use
+   ========================= */
+// export async function logoutUser() {
+//   await signOut({ redirectTo: "/" });
+// }
+
+// =========================

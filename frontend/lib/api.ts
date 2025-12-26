@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth"; // We import the auth config to get the session
+import { API_URL } from "./config";
 
 // This is the base URL of your Express.js backend
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = API_URL;
 
 if (!BASE_URL) {
   throw new Error(
