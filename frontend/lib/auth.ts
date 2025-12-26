@@ -64,7 +64,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, account }) {
       if (account && user) {
-        // 🔥 GitHub Login Flow
         if (account.provider === "github") {
           try {
             const res = await fetch(`${API_URL}/auth/github/sync`, {
@@ -84,7 +83,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (!res.ok) throw new Error(data.message || "GitHub sync failed");
 
             token.apiToken = data.token;
-            // Handle different ID shapes (MongoDB _id vs GitHub id)
             token.id = data.user._id || data.user.id;
           } catch (error) {
             console.error("GitHub sync error:", error);
@@ -92,9 +90,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         }
 
-        // 🔥 Credentials Login Flow
         if (account.provider === "credentials") {
-          // Verify your backend actually returns these fields in the 'user' object above
           token.apiToken = (user as any).token;
           token.id = (user as any).user?._id;
         }

@@ -33,8 +33,8 @@ type Project = {
 interface LogWorkModalProps {
   projects: Project[];
   trigger?: React.ReactNode;
-  initialDuration?: number; // 👈 New Prop: Time from timer
-  onSuccess?: () => void;   // 👈 New Prop: To reset timer
+  initialDuration?: number;
+  onSuccess?: () => void;  
 }
 
 export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: LogWorkModalProps) {
@@ -51,7 +51,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
     projectId: "",
   });
 
-  // 👇 SYNC FORM WITH TIMER: When modal opens, use the timer's duration
   useEffect(() => {
     if (open && initialDuration && initialDuration > 0) {
       setFormData((prev) => ({
@@ -74,7 +73,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
 
       if (result.success) {
         setOpen(false);
-        // Reset form
         setFormData((prev) => ({
           ...prev,
           title: "",
@@ -83,10 +81,8 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
         }));
         toast.success("Work logged successfully!", { id: toastId });
         
-        // Refresh page to show new logs
         router.refresh();
 
-        // 👈 Notify the Timer (or parent) that we are done
         if (onSuccess) onSuccess(); 
 
       } else {
@@ -117,7 +113,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
             </DialogDescription>
           </DialogHeader>
 
-          {/* ... (The rest of your JSX inputs remain exactly the same) ... */}
           <div className="grid gap-4 py-4">
             {/* Row 1: Title */}
             <div className="grid gap-2">
@@ -131,7 +126,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
               />
             </div>
 
-            {/* Row 2: Duration & Date */}
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="duration">Duration (mins)</Label>
@@ -157,7 +151,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
               </div>
             </div>
 
-            {/* Row 3: Project & Category */}
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label>Project</Label>
@@ -199,7 +192,6 @@ export function LogWorkModal({ projects, trigger, initialDuration, onSuccess }: 
               </div>
             </div>
 
-            {/* Row 4: Description */}
             <div className="grid gap-2">
               <Label htmlFor="desc">Notes (Optional)</Label>
               <Textarea

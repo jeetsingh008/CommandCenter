@@ -2,17 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { signIn } from "@/lib/auth";
-import { api } from "@/lib/api"; // 👈 Add this
-import { revalidatePath } from "next/cache"; //
+import { api } from "@/lib/api"; 
+import { revalidatePath } from "next/cache";
 import { API_URL } from "./config";
 
 type FormState = {
   message: string;
 };
 
-/* =========================
-   REGISTER USER (Unchanged)
-   ========================= */
 export async function registerUser(
   prevState: FormState,
   formData: FormData
@@ -51,9 +48,6 @@ export async function registerUser(
   redirect("/login");
 }
 
-/* =========================
-   LOGIN USER (Updated for Debugging)
-   ========================= */
 export async function loginUser(
   prevState: FormState,
   formData: FormData
@@ -72,14 +66,12 @@ export async function loginUser(
       redirect: false,
     });
   } catch (error) {
-    // 1. Let Next.js Redirects pass through (Successful login)
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
 
     const err = error as any;
 
-    // 2. Check for Credential Errors (Invalid login)
     if (
       err.type === "CredentialsSignin" ||
       err.code === "credentials" ||
@@ -88,8 +80,6 @@ export async function loginUser(
       return { message: "Invalid email or password." };
     }
 
-    // 3. 🛑 DEBUGGING: Return the REAL error message to the UI
-    // This will tell us if it's a Database error, Fetch error, or Config error
     console.error("Login Error Details:", JSON.stringify(err, null, 2));
 
     return {
@@ -102,21 +92,15 @@ export async function loginUser(
   redirect("/control-panel");
 }
 
-/* =========================
-   🆕 CREATE PROJECT ACTION
-   ========================= */
 export async function createProjectAction(formData: {
   title: string;
   description: string;
   color: string;
 }) {
   try {
-    // This runs securely on the server
-    // api.post uses the headers from auth(), so the token is attached automatically
     const res: any = await api.post("projects", formData);
 
     if (res.success) {
-      // Refresh the dashboard so the new project shows up immediately
       revalidatePath("/control-panel");
       return { success: true, data: res.data };
     }
@@ -140,7 +124,7 @@ export async function createLogAction(data: {
     const res: any = await api.post("logs", data);
 
     if (res.success) {
-      revalidatePath("/control-panel"); // Refresh dashboard stats
+      revalidatePath("/control-panel");
       return { success: true, data: res.data };
     }
 
