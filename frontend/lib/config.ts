@@ -1,6 +1,6 @@
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+  process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
-  console.warn("API_URL is missing! Check .env file.");
+  throw new Error("API_URL is missing! Check environment variables.");
 }
