@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { api } from "@/lib/api";
 // import Link from "next/link";
 import { AlertCircle } from "lucide-react";
@@ -64,7 +65,7 @@ export default async function ControlPanelPage() {
     }
 
     if ((analyticsRes as any).success) {
-      weeklyStats = (analyticsRes as any).data.weekly; 
+      weeklyStats = (analyticsRes as any).data.weekly;
       totalHours = (analyticsRes as any).data.totalHours;
     }
   } catch (err: any) {
@@ -118,7 +119,6 @@ export default async function ControlPanelPage() {
 
       {/* MAIN CONTENT AREA */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Activity Log (Main Chart Area) */}
         <Card className="lg:col-span-2 flex flex-col">
           <CardHeader>
@@ -128,12 +128,12 @@ export default async function ControlPanelPage() {
             </CardTitle>
             <CardDescription>Your recent development sessions.</CardDescription>
           </CardHeader>
-          
+
           {/* 👇 KEY FIX: Removed flex-1, added explicit p-0 and inner div with explicit height */}
           <CardContent className="p-0">
-             <div className="h-[300px] w-full p-4">
-                <ActivityChart data={weeklyStats} />
-             </div>
+            <div className="h-[300px] w-full p-4">
+              <ActivityChart data={weeklyStats} />
+            </div>
           </CardContent>
 
           <div className="px-6 pb-6 pt-4 border-t border-gray-800/50">
