@@ -78,7 +78,7 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
       <SidebarContent>
         {/* 👇 2. MOUNT THE TIMER HERE (Top of Content) */}
         {/* We pass the projects list so the Modal inside the timer knows what to log to */}
-        <div className="mt-2">
+        <div className="mt-2 overflow-hidden">
           <FocusTimer projects={projects} />
         </div>
 
@@ -97,7 +97,7 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Settings">
-                  <Link href="/control-panel/">
+                  <Link href="/control-panel/settings">
                     <Settings />
                     <span>Settings</span>
                   </Link>
@@ -192,17 +192,23 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                
                 <DropdownMenuItem>
                   <CreditCard className="mr-2 h-4 w-4" />
                   Billing
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
+
+                <DropdownMenuItem asChild>
+                  <Link href="/control-panel/settings" className="w-full cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </Link>
                 </DropdownMenuItem>
+                
                 <DropdownMenuSeparator />
+                
                 <DropdownMenuItem
-                  className="text-red-500 focus:text-red-500"
+                  className="text-red-500 focus:text-red-500 cursor-pointer"
                   onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
