@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
+import { API_URL } from "./config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -28,17 +29,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            }
-          );
+          const res = await fetch(`${API_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
 
           if (!res.ok) {
             return null;
@@ -69,19 +67,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // 🔥 GitHub Login Flow
         if (account.provider === "github") {
           try {
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/auth/github/sync`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  githubId: user.id,
-                  username: user.name,
-                  email: user.email,
-                  accessToken: account.access_token,
-                }),
-              }
-            );
+            const res = await fetch(`${API_URL}/auth/github/sync`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                githubId: user.id,
+                username: user.name,
+                email: user.email,
+                accessToken: account.access_token,
+              }),
+            });
 
             const response = await res.json();
             const data = response.data;
