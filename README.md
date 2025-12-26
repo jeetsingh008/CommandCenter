@@ -80,13 +80,16 @@ The application follows a strict separation between the **Next.js Frontend** (Pr
 ```bash
 git clone [https://github.com/jeetsingh008/command-center.git](https://github.com/jeetsingh008/command-center.git)
 cd command-center
-
+```
 ## 🛠️ Backend Setup
 
 ```bash
 cd backend
 npm install
+```
+2️⃣ Environment Variables
 
+Create a .env file inside the backend folder and add the following:
 ```bash
 PORT=8000
 MONGODB_URI=your_mongodb_connection_string
@@ -95,3 +98,22 @@ REFRESH_TOKEN_SECRET=your_refresh_secret
 ACCESS_TOKEN_EXPIRY=15m
 REFRESH_TOKEN_EXPIRY=7d
 CORS_ORIGIN=http://localhost:3000
+```
+## Frontend Setup
+1️⃣ Install Dependencies
+
+```bash
+cd frontend
+npm install
+```
+2️⃣ Environment Variables
+
+Create a .env.local file inside the frontend folder and add:
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/
+```
+3️⃣ Run the Frontend Client
+
+```bash
+npm run dev
+```
