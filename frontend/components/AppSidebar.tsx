@@ -97,7 +97,7 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Settings">
-                  <Link href="/control-panel/settings">
+                  <Link href="/control-panel/">
                     <Settings />
                     <span>Settings</span>
                   </Link>
