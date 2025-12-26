@@ -17,15 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// We import the new loginUser Server Action using a relative path
 import { loginUser } from "@/lib/actions";
 
-// This is the initial state for our form
 const initialState = {
   message: "",
 };
 
-// A helper component to show a loading spinner on the submit button
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -36,7 +33,6 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
-  // `useFormState` connects our form to the Server Action
   const [state, formAction] = useActionState(loginUser, initialState);
 
   return (
@@ -49,18 +45,15 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          {/* GitHub Sign-In Button */}
           <Button
             variant="outline"
             className="w-full"
             onClick={() =>
               signIn("github", {
-                // After sign-in, redirect to the dashboard
                 callbackUrl: "/control-panel",
               })
             }
           >
-            {/* You would add a GitHub icon here */}
             <svg
               className="mr-2 h-4 w-4"
               fill="currentColor"
@@ -85,29 +78,22 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Login Form */}
           <form action={formAction} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                name="email" // 'name' attribute is required for Server Actions
+                name="email"
                 placeholder="you@example.com"
                 required
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                name="password" // 'name' attribute is required
-                required
-              />
+              <Input id="password" type="password" name="password" required />
             </div>
 
-            {/* Display error messages from the server */}
             {state?.message && (
               <p className="text-sm text-red-500">{state.message}</p>
             )}
