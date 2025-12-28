@@ -41,7 +41,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
-            Sign in to access your DevPulse dashboard.
+            Sign in to access your Command-Center dashboard.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">

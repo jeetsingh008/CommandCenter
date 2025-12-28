@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "The backend for devpulse",
+  "description": "The backend for Command-Center",
   "main": "index.js",
   "type": "module",
   "scripts": {
