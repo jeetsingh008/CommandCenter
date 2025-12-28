@@ -23,8 +23,13 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-2">
-            <Code2Icon className="h-6 w-6" />
-            <span className="font-bold text-lg">DevPulse</span>
+            <Code2Icon className="h-6 w-6 text-primary" />
+            <span className="font-bold text-lg text-primary font-ser">
+              <span className="text-primary font-mono text-xl">C</span>OMMAND-
+              <span className="text-primary font-mono text-xl">
+                C
+              </span>ENTER{" "}
+            </span>
           </Link>
         </div>
 
