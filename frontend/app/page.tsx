@@ -47,7 +47,7 @@ export default function HomePage() {
             <span className="text-primary font-semibold">)</span>
           </p>
           <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
-            DevPulse automatically syncs your GitHub activity, tracks your
+            Command-Center automatically syncs your GitHub activity, tracks your
             learning, and visualizes your progress. Stop guessing, start
             knowing.
           </p>
@@ -112,8 +112,8 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-xl font-bold">Automatic GitHub Sync</h3>
                 <p className="text-muted-foreground">
-                  Connect your GitHub account and DevPulse automatically ingests
-                  your commits, pull requests, and repo activity.
+                  Connect your GitHub account and Command-Center automatically
+                  ingests your commits, pull requests, and repo activity.
                 </p>
               </div>
 
@@ -219,7 +219,7 @@ export default function HomePage() {
               <div className="flex flex-col justify-between rounded-xl border bg-background p-6 shadow-sm">
                 <p className="mb-4 text-muted-foreground italic">
                   &quot;I used to manually track my hours in a spreadsheet.
-                  DevPulse automated everything. The radar chart helped me
+                  Command-Center automated everything. The radar chart helped me
                   realize I was neglecting code reviews.&quot;
                 </p>
                 <div className="flex items-center gap-3">

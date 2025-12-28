@@ -41,7 +41,7 @@ export default function RegisterPage() {
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>
-            Join DevPulse to start tracking your developer activity.
+            Join Command-Center to start tracking your developer activity.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
