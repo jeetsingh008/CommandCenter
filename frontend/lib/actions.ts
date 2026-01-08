@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { signIn } from "@/lib/auth";
-import { api } from "@/lib/api"; 
+import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { API_URL } from "./config";
 
@@ -83,9 +83,8 @@ export async function loginUser(
     console.error("Login Error Details:", JSON.stringify(err, null, 2));
 
     return {
-      message: `Login Failed: ${
-        err.message || "Check server console for details"
-      }`,
+      message: `Login Failed: ${err.message || "Check server console for details"
+        }`,
     };
   }
 
@@ -138,8 +137,9 @@ export async function createLogAction(data: {
 /* =========================
    LOGOUT USER ---> for future use
    ========================= */
-// export async function logoutUser() {
-//   await signOut({ redirectTo: "/" });
-// }
+
+export async function logoutUser() {
+  await signOut({ redirectTo: "/" });
+}
 
 // =========================
