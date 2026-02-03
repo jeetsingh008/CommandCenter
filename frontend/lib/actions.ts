@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { signIn } from "@/lib/auth";
+import { signIn, signOut } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { API_URL } from "./config";
@@ -12,7 +12,7 @@ type FormState = {
 
 export async function registerUser(
   prevState: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   const email = formData.get("email")?.toString().toLowerCase();
   const password = formData.get("password");
@@ -50,7 +50,7 @@ export async function registerUser(
 
 export async function loginUser(
   prevState: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   const email = formData.get("email");
   const password = formData.get("password");
@@ -83,8 +83,9 @@ export async function loginUser(
     console.error("Login Error Details:", JSON.stringify(err, null, 2));
 
     return {
-      message: `Login Failed: ${err.message || "Check server console for details"
-        }`,
+      message: `Login Failed: ${
+        err.message || "Check server console for details"
+      }`,
     };
   }
 
