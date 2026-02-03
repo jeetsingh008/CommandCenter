@@ -59,7 +59,7 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/control-panel">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-blue-600 text-sidebar-primary-foreground">
+                <div className="flex aspect-square size-8 items-center justify-center bg-primary text-sidebar-primary-foreground rounded-lg">
                   <BrickWallFire className="size-4 text-white" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -187,21 +187,24 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                
+
                 <DropdownMenuItem>
                   <CreditCard className="mr-2 h-4 w-4" />
                   Billing
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Link href="/control-panel/settings" className="w-full cursor-pointer">
+                  <Link
+                    href="/control-panel/settings"
+                    className="w-full cursor-pointer"
+                  >
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </Link>
                 </DropdownMenuItem>
-                
+
                 <DropdownMenuSeparator />
-                
+
                 <DropdownMenuItem
                   className="text-red-500 focus:text-red-500 cursor-pointer"
                   onClick={() => signOut({ callbackUrl: "/login" })}
