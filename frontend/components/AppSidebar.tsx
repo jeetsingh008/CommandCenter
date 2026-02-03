@@ -22,7 +22,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import {
@@ -72,8 +71,6 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-
-      <SidebarSeparator />
 
       <SidebarContent>
         <div className="mt-2 overflow-hidden">
