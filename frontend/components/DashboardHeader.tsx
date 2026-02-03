@@ -11,7 +11,7 @@ const FALLBACK_USER = {
   bio: "Full Stack Developer building cool things.",
 };
 
-const DashboardHeader = ({ user }) => {
+const DashboardHeader = ({ user }: { user: any }) => {
   const userData = user || FALLBACK_USER;
 
   // Formatting Date safely
