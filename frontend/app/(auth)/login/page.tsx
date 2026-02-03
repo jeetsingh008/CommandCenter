@@ -100,7 +100,7 @@ export default function LoginPage() {
               className="w-full h-11 relative"
               onClick={() =>
                 signIn("github", {
-                  callbackUrl: "/dashboard",
+                  callbackUrl: "/control-panel",
                 })
               }
             >
