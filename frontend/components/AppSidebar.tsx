@@ -54,7 +54,7 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
   return (
     <Sidebar collapsible="icon">
       {/* --- HEADER --- */}
-      <SidebarHeader className="py-4">
+      <SidebarHeader className="py-4 border-b border-sidebar-border/50">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -63,8 +63,8 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                   <BrickWallFire className="size-4 text-white" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">CommandCenter</span>
-                  <span className="truncate text-xs">v1.0.0</span>
+                  <span className="truncate font-semibold tracking-tight">CommandCenter</span>
+                  <span className="truncate text-xs text-primary/70 font-mono">v1.0.0 · online</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -116,18 +116,19 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
                     <SidebarMenuButton asChild>
                       <Link href={`/control-panel/projects/${project._id}`}>
                         <span
-                          className="flex h-2 w-2 rounded-full mr-2"
+                          className="flex h-2 w-2 rounded-full mr-2 flex-shrink-0"
                           style={{
-                            backgroundColor: project.color || "#3B82F6",
+                            backgroundColor: project.color || "#4ade80",
+                            boxShadow: `0 0 6px ${project.color || "#4ade80"}`,
                           }}
                         />
-                        <span>{project.title}</span>
+                        <span className="truncate">{project.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))
               ) : (
-                <div className="p-4 text-xs text-muted-foreground text-center border border-dashed rounded-md m-2">
+                <div className="p-4 text-xs text-muted-foreground text-center border border-dashed border-sidebar-border rounded-md m-2">
                   No projects yet.
                 </div>
               )}
@@ -151,7 +152,8 @@ const AppSidebar = ({ user, projects }: AppSidebarProps) => {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground
+                             hover:ring-1 hover:ring-primary/30 transition-all duration-150"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarFallback className="rounded-lg">

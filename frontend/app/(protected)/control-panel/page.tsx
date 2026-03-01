@@ -1,38 +1,34 @@
 export const dynamic = "force-dynamic";
 import { api } from "@/lib/api";
-// import Link from "next/link";
-import { AlertCircle } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  AlertCircle,
+  FolderOpen,
+  Zap,
+  Clock3,
+  TrendingUp,
+  ArrowRight,
+  PlusCircle,
+  FileText,
+  Settings2,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
+import { Button } from "@/components/ui/button";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { LogWorkModal } from "@/components/logWorKModal";
 import { RecentActivityList } from "@/components/RecentActivityList";
 import { ActivityChart } from "@/components/ActivityChart";
+import { CategoryRadarChart } from "@/components/CategoryRadarChart";
+import Link from "next/link";
 
 interface DashboardData {
-  user: {
-    name: string;
-    email: string;
-  };
+  user: { name: string; email: string };
   projects: any[];
 }
 
 interface LogData {
   _id: string;
   title: string;
-  project?: {
-    title: string;
-    color: string;
-  };
+  project?: { title: string; color: string };
   durationMinutes: number;
   date: string;
   category: string;
@@ -44,12 +40,14 @@ export default async function ControlPanelPage() {
   let error = null;
   let weeklyStats: any[] = [];
   let totalHours = "0.0";
+  let categoryStats: { category: string; minutes: number }[] = [];
 
   try {
-    const [userRes, logsRes, analyticsRes] = await Promise.all([
+    const [userRes, logsRes, analyticsRes, categoryRes] = await Promise.all([
       api.get("users/me"),
       api.get("logs?limit=10"),
       api.get("analytics/weekly"),
+      api.get("analytics/categories"),
     ]);
 
     if ((userRes as any).success && (userRes as any).data) {
@@ -65,6 +63,10 @@ export default async function ControlPanelPage() {
     if ((analyticsRes as any).success) {
       weeklyStats = (analyticsRes as any).data.weekly;
       totalHours = (analyticsRes as any).data.totalHours;
+    }
+
+    if ((categoryRes as any).success) {
+      categoryStats = (categoryRes as any).data.categories;
     }
   } catch (err: any) {
     console.error("Dashboard Load Error:", err.message);
@@ -91,130 +93,176 @@ export default async function ControlPanelPage() {
   const { user, projects } = dashboardData;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* HEADER */}
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+
+      {/* ── HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Control Panel</h1>
-          <p className="text-muted-foreground mt-1">
-            Welcome back,{" "}
-            <span className="text-primary font-semibold">{user.name}</span>.
-            System operational.
-          </p>
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">Control Panel</h1>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>
+              Welcome back,{" "}
+              <span className="text-primary font-medium">{user.name}</span>
+            </span>
+            <span className="text-border">·</span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              System online
+            </span>
+          </div>
         </div>
         <CreateProjectModal />
       </div>
 
-      {/* STATS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Active Projects" value={projects.length} icon="📂" />
-        <StatCard label="Recent Logs" value={recentLogs.length} icon="⚡" />
-        <StatCard label="Coding Hours" value={`${totalHours}h`} icon="⏱️" />
-        <StatCard label="Efficiency" value="94%" icon="🚀" />
+      {/* ── STATS ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Active Projects" value={projects.length} Icon={FolderOpen} accent="#4ade80" />
+        <StatCard label="Recent Logs" value={recentLogs.length} Icon={Zap} accent="#a78bfa" />
+        <StatCard label="Coding Hours" value={`${totalHours}h`} Icon={Clock3} accent="#38bdf8" />
+        <StatCard label="Efficiency" value="94%" Icon={TrendingUp} accent="#fb923c" />
       </div>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Activity Log (Main Chart Area) */}
-        <Card className="lg:col-span-2 flex flex-col">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Activity Feed
-            </CardTitle>
-            <CardDescription>Your recent development sessions.</CardDescription>
-          </CardHeader>
+      {/* ── CHARTS ROW ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-          <CardContent className="p-0">
-            <div className="h-75 w-full p-4">
-              <ActivityChart data={weeklyStats} />
-            </div>
-          </CardContent>
+        {/* Bar chart — spans 2 cols */}
+        <div className="lg:col-span-2 rounded-lg border border-border bg-card">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-border">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <h2 className="font-medium text-sm">Activity Feed</h2>
+            <span className="ml-auto text-xs text-muted-foreground">Last 7 days</span>
+          </div>
+          <div className="p-4 h-64">
+            <ActivityChart data={weeklyStats} />
+          </div>
+        </div>
 
-          <div className="px-6 pb-6 pt-4 border-t border-gray-800/50">
-            <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+        {/* Radar chart — spans 1 col */}
+        <div className="rounded-lg border border-border bg-card">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-border">
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <h2 className="font-medium text-sm">Focus Areas</h2>
+            <span className="ml-auto text-xs text-muted-foreground">All time</span>
+          </div>
+          <div className="p-4 h-64">
+            <CategoryRadarChart data={categoryStats} />
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── BOTTOM ROW ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        {/* Recent history — spans 2 cols */}
+        <div className="lg:col-span-2 rounded-lg border border-border bg-card">
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">
               Recent History
-            </h3>
+            </p>
+          </div>
+          <div className="px-5 py-4">
             <RecentActivityList logs={recentLogs} />
           </div>
-        </Card>
+        </div>
 
-        {/* Side Panel */}
-        <div className="space-y-6">
-          {/* Recent Projects List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Access</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
+        {/* Side panel — spans 1 col */}
+        <div className="space-y-4">
+
+          {/* Quick Access */}
+          <div className="rounded-lg border border-border bg-card">
+            <div className="px-4 py-3 border-b border-border">
+              <h2 className="text-sm font-medium">Quick Access</h2>
+            </div>
+            <div className="p-2">
               {projects.length > 0 ? (
-                projects.slice(0, 3).map((proj: any) => (
-                  <Button
+                projects.slice(0, 4).map((proj: any) => (
+                  <Link
                     key={proj._id}
-                    variant="secondary"
-                    className="w-full justify-between h-auto py-3 px-4 group"
+                    href={`/control-panel/projects/${proj._id}`}
+                    className="flex items-center justify-between w-full rounded-md px-3 py-2
+                               text-sm text-muted-foreground hover:text-foreground
+                               hover:bg-accent transition-colors duration-100 group"
                   >
-                    <span>{proj.title}</span>
-                    <span
-                      className="w-2 h-2 rounded-full ring-2 ring-transparent group-hover:ring-offset-2 transition-all"
-                      style={{ backgroundColor: proj.color || "#3b82f6" }}
-                    ></span>
-                  </Button>
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: proj.color || "#4ade80" }}
+                      />
+                      <span className="truncate">{proj.title}</span>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-60 transition-opacity" />
+                  </Link>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground italic">
-                  No projects found
+                <p className="text-xs text-muted-foreground italic px-3 py-4 text-center">
+                  No projects yet
                 </p>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
+          <div className="rounded-lg border border-border bg-card">
+            <div className="px-4 py-3 border-b border-border">
+              <h2 className="text-sm font-medium">Actions</h2>
+            </div>
+            <div className="p-2 space-y-0.5">
               <LogWorkModal projects={projects} />
-              <QuickAction label="View Team Settings" />
-              <QuickAction label="System Report" />
-            </CardContent>
-          </Card>
+              <ActionButton Icon={PlusCircle} label="New Project" />
+              <ActionButton Icon={FileText} label="System Report" />
+              <ActionButton Icon={Settings2} label="Team Settings" />
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
 
-
+/* ── StatCard ── */
 function StatCard({
   label,
   value,
-  icon,
+  Icon,
+  accent,
 }: {
   label: string;
   value: string | number;
-  icon: string;
+  Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  accent: string;
 }) {
   return (
-    <Card>
-      <CardContent className="p-6 flex items-center gap-4">
-        <div className="text-2xl p-3 bg-secondary rounded-lg">{icon}</div>
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <h3 className="text-2xl font-bold tracking-tight">{value}</h3>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="rounded-lg border border-border bg-card p-5 flex items-center gap-4">
+      <div
+        className="flex-shrink-0 w-9 h-9 rounded-md flex items-center justify-center"
+        style={{ backgroundColor: `${accent}18`, border: `1px solid ${accent}35` }}
+      >
+        <Icon className="w-4 h-4" style={{ color: accent }} />
+      </div>
+      <div>
+        <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
+        <p className="text-xl font-semibold tracking-tight">{value}</p>
+      </div>
+    </div>
   );
 }
 
-function QuickAction({ label }: { label: string }) {
+/* ── ActionButton ── */
+function ActionButton({
+  label,
+  Icon,
+}: {
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+}) {
   return (
     <Button
       variant="ghost"
-      className="w-full justify-start text-left font-normal"
+      className="w-full justify-start font-normal text-muted-foreground hover:text-foreground gap-2.5 h-9"
     >
+      <Icon className="w-4 h-4 opacity-50" />
       {label}
     </Button>
   );

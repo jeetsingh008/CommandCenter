@@ -56,4 +56,37 @@ const getWeeklyStats = asyncHandler(async (req, res) => {
   );
 });
 
-export { getWeeklyStats };
+const getCategoryStats = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Invalid user ID");
+  }
+
+  const ALL_CATEGORIES = [
+    "Coding", "Design", "Learning", "Meeting", "Planning", "Bug Fix", "Other",
+  ];
+
+  const results = await Log.aggregate([
+    { $match: { owner: new mongoose.Types.ObjectId(userId) } },
+    {
+      $group: {
+        _id: "$category",
+        totalMinutes: { $sum: "$durationMinutes" },
+      },
+    },
+  ]);
+
+  // Build a complete map so every category always appears (value 0 if no logs)
+  const map = Object.fromEntries(results.map((r) => [r._id, r.totalMinutes]));
+  const categories = ALL_CATEGORIES.map((cat) => ({
+    category: cat,
+    minutes: map[cat] ?? 0,
+  }));
+
+  return res.status(200).json(
+    new ApiResponse(200, { categories }, "Category stats fetched")
+  );
+});
+
+export { getWeeklyStats, getCategoryStats };
+
