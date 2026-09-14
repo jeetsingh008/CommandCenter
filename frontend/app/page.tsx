@@ -75,14 +75,20 @@ export default function HomePage() {
               <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
               <span className="h-3 w-3 rounded-full bg-green-500"></span>
             </div>
-            {/* Placeholder for image */}
-            <div className="aspect-video w-full rounded-lg bg-muted/50 p-2 flex items-center justify-center text-muted-foreground">
+            <div className="aspect-video w-full rounded-lg bg-muted/50 p-2 flex items-center justify-center text-muted-foreground overflow-hidden">
               <Image
-                src="/images/dashboard-preview.jpg"
-                alt="Dashboard Preview"
+                src="/images/sslight.png"
+                alt="Command Center Light Mode"
                 width={1700}
                 height={900}
-                className="rounded-md object-cover"
+                className="rounded-md object-cover dark:hidden shadow-lg border border-border"
+              />
+              <Image
+                src="/images/ssdark.png"
+                alt="Command Center Dark Mode"
+                width={1700}
+                height={900}
+                className="rounded-md object-cover hidden dark:block shadow-lg border border-border"
               />
             </div>
           </div>
