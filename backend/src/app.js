@@ -43,3 +43,23 @@ app.use("/api/logs", logRouter);
 // Analytics Route registration
 import analyticsRouter from "./routes/analytics.route.js";
 app.use("/api/analytics", analyticsRouter);
+
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+  // Check if the error is our custom ApiError
+  if (err.statusCode) {
+    return res.status(err.statusCode).json({
+      success: err.success,
+      message: err.message,
+      error: err.error,
+      stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
+    });
+  }
+
+  // Fallback for unhandled/native errors
+  return res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
+  });
+});
