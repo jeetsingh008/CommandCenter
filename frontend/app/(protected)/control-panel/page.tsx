@@ -98,7 +98,7 @@ export default async function ControlPanelPage() {
       {/* ── HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Control Panel</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>
               Welcome back,{" "}
