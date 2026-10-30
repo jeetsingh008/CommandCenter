@@ -3,6 +3,7 @@ import Navbar from "@/app/(protected)/control-panel/_components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 import { api } from "@/lib/api";
+import { CommandMenu } from "@/components/CommandMenu";
 
 const ControlPanelLayout = async ({
   children,
@@ -35,6 +36,8 @@ const ControlPanelLayout = async ({
         <Navbar />
         <div className="flex-1 w-full">{children}</div>
       </main>
+      {/* Global Command Palette */}
+      <CommandMenu projects = {projects} />
     </SidebarProvider>
   );
 };
