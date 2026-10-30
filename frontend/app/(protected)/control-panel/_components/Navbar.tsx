@@ -1,5 +1,5 @@
 "use client";
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { LogOut, Moon, Settings, Sun, User, Search } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,7 +21,29 @@ const Navbar = () => {
     <nav className="px-4 py-3 flex items-center justify-between sticky top-0 z-30
                     bg-background/70 backdrop-blur-md border-b border-white/5">
       {/* Left side */}
-      <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors" />
+  <div className="flex items-center gap-2">
+  <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors" />
+  {/* Search / Command Palette trigger pill */}
+  <button
+    type="button"
+    onClick={() => {
+      // Dispatches a synthetic event or opens palette
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        ctrlKey: true,
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
+    }}
+    className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground bg-muted/40 hover:bg-muted/70 hover:text-foreground border border-border/50 rounded-lg transition-all"
+  >
+    <Search className="h-3.5 w-3.5" />
+    <span>Search commands or projects...</span>
+    <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100">
+      <span className="text-xs">⌘</span>K
+    </kbd>
+  </button>
+</div>
 
       {/* Right side */}
       <div className="flex items-center gap-3">
